@@ -70,11 +70,12 @@ class AbstractStructureGraphCreator:
                 successors.append(edge[1])
         return successors
 
+NB_NODE_TYPES = 15
 class NodeType:
     """Used by AbstractStructureGraph to make nodes of different types distinguishable."""
     (constant, init, goal, operator, condition, effect, effect_literal,
     function, axiom, axiom_cond, axiom_eff, predicate, cost, mutex_group,
-    number) = range(15)
+    number) = range(NB_NODE_TYPES)
 
 
 class Color:
@@ -557,6 +558,7 @@ if __name__ == "__main__":
             f.close()
 
         # print("Turning graph into adjacency list representation")
+        node_types = []
         adjacency_graph = []
         node_counter = 0
         vertex_indices = {}
@@ -564,6 +566,7 @@ if __name__ == "__main__":
             if hide_equal_predicates and vertex in graph.graph.excluded_vertices:
                 continue
             vertex_indices[vertex] = node_counter
+            node_types.append(vertex[0])
             adjacency_graph.append([])
             node_counter += 1
         for edge in graph.graph.edges:
@@ -574,10 +577,16 @@ if __name__ == "__main__":
                 j = vertex_indices[edge[1]]
                 adjacency_graph[i].append(j)
 
-        def get_string(some_list):
-            return ','.join(str(elem) for elem in some_list)
 
-        f = open('abstract-structure-graph.txt', 'w')
-        lines = '\n'.join(get_string(successors) for successors in adjacency_graph)
-        f.write(lines)
-        f.close()
+        with open('abstract-structure-graph.txt', 'w') as f:
+            for successors in adjacency_graph:
+                f.write(",".join(str(elem) for elem in successors))
+                f.write("\n")
+
+        with open('annotated-abstract-structure-graph.txt', 'w') as f:
+            f.write(f"# Nb node types\n{NB_NODE_TYPES}\n")
+            f.write("# format: For each node i (starting at 0), the i-th line contains: NODE_TYPE_OF_i(,IDS_OF_SUCCESSORS_OF_i)*\n")
+
+            for node_type, successors in zip(node_types, adjacency_graph):
+                f.write(",".join(str(elem) for elem in ([node_type] + successors)))
+                f.write("\n")
