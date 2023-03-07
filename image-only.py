@@ -33,8 +33,9 @@ def get_repo_base():
 
     Abort if the repo base cannot be found."""
     path = os.path.abspath(get_script_dir())
+
     while os.path.dirname(path) != path:
-        if os.path.exists(os.path.join(path, ".hg")):
+        if os.path.exists(os.path.join(path, ".git")):
             return path
         path = os.path.dirname(path)
     sys.exit("repo base could not be found")
@@ -103,10 +104,10 @@ if __name__ == "__main__":
     print("Computing abstract graph structure for the given problem and domain.")
     graph_file = compute_graph_for_task(domain, problem, image_from_lifted_task)
     print("Done computing abstract graph structure.")
-    print
+    print()
 
     if graph_file is None:
-	print_failed()
+        print_failed()
     else:
         try:
             # Create an image from the abstract structure for the given domain and problem.
@@ -117,5 +118,5 @@ if __name__ == "__main__":
             image_path = os.path.join(pwd, image_file_name)
             assert os.path.exists(image_path)
         except:
-	    print_failed()
+            print_failed()
 

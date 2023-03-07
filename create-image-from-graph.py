@@ -149,7 +149,7 @@ def write_matrix_image_grayscale(graph, output_directory, bolded=False, shrink_r
 
     for x,y,color in zip(cx.row, cx.col, cx.data):
         #print("Pixel of color %s at (%s,%s)" % (grayscale_color - color, x, y))
-        im.putpixel((x, y), grayscale_color - color)
+        im.putpixel((x, y), int(grayscale_color - color))
 
     #matrix_data = grayscale_color - matrix_data
 
@@ -161,7 +161,7 @@ def write_matrix_image_grayscale(graph, output_directory, bolded=False, shrink_r
 
     size = target_size, target_size
 
-    newimg = im.resize(size, Image.ANTIALIAS)
+    newimg = im.resize(size, Image.LANCZOS)
 
     print("Writing grayscale image of size %sx%s .." % size)
     newimg.save(os.path.join(output_directory, nm_constant_size), "png")
