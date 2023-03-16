@@ -59,7 +59,7 @@ class AbstractStructureGraphCreator:
         self.edges.add((vertex1, vertex2))
 
     def get_vertices(self):
-        return sorted(self.vertex_to_color.keys())
+        return sorted(self.vertex_to_color.keys(), key=lambda x: str(x))
 
     def get_successors(self, vertex):
         successors = []
@@ -273,11 +273,12 @@ class AbstractStructureGraph:
     def _add_init(self, task):
         def get_key(init_entry):
             if isinstance(init_entry, pddl.Literal):
-                return init_entry.key
+                return str(init_entry.key)
             elif isinstance(init_entry, pddl.Assign):
                 return str(init_entry)
             else:
                 assert False
+
         assert isinstance(task.init, list)
         init = sorted(task.init, key=get_key)
         for no, entry in enumerate(init):
